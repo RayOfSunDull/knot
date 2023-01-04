@@ -2,12 +2,8 @@ package main
 
 import (
 	"fmt"
-	// "os"
-	// "os/exec"
 	"path/filepath"
 	"knot/utils"
-	// "errors"
-	// "regexp"
 	"log"
 )
 
@@ -23,7 +19,7 @@ func main() {
 
 	projectInfo, errProjectInfo := knot.GetProjectInfo(
 		&flags, &systemInfo, &projects)
-	// fmt.Println(projectInfo)
+
 	if errProjectInfo != nil && false { fmt.Println(errProjectInfo) }
 
 	projectName := filepath.Base(projectInfo.ProjectDir)
