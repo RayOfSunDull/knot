@@ -44,7 +44,7 @@ func MakeBatch(templatePath string, pi *ProjectInfo, batchNumber int, open bool)
 
 func CreateProject(templatePath string, si *SystemInfo, pi *ProjectInfo, open bool) error {
 	if _, err := os.Stat(pi.ProjectDir); err == nil {
-		fmt.Printf("directory <%s> already exists. Assuming you simply want to register it instead of creating a new project")
+		fmt.Printf("directory <%s> already exists. Assuming you simply want to register it instead of creating a new project\n", pi.ProjectDir)
 		return nil
 	}
 
