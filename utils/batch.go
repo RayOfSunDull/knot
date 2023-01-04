@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"errors"
+	// "errors"
 )
 
 func GetBatchName(pi *ProjectInfo, batchNumber int) string {
@@ -44,8 +44,8 @@ func MakeBatch(templatePath string, pi *ProjectInfo, batchNumber int, open bool)
 
 func CreateProject(templatePath string, si *SystemInfo, pi *ProjectInfo, open bool) error {
 	if _, err := os.Stat(pi.ProjectDir); err == nil {
-		return errors.New(fmt.Sprintf(
-			"directory <%s> already exists", pi.ProjectDir))
+		fmt.Printf("directory <%s> already exists. Assuming you simply want to register it instead of creating a new project")
+		return nil
 	}
 
 	if err := EnsureDirExists(pi.ProjectDir); err != nil {
