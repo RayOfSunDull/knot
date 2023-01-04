@@ -28,7 +28,7 @@ And add it to your path (add this line to `~/.bashrc` if you want access to it i
 ```sh
 $ export PATH="/path_to_repo/knot/bin:$PATH"
 ```
-You may also compile it using the `go` compiler. Simply run `knot/build.sh`. There are no build dependencies other than the go standard library.
+You may also compile it using the `go` compiler. Simply run `knot/build.sh` (note that `$PWD` must be the directory of the program). There are no build dependencies other than the go standard library.
 
 ## Basic Usage
 ### silent mode
