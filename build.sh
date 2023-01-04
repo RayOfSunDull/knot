@@ -1,4 +1,4 @@
-KNOTDIR=~/projects/code/programs/knot
+KNOTDIR=$PWD
 
 go build -o $KNOTDIR/bin/knot $KNOTDIR/src
 
