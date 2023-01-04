@@ -53,7 +53,7 @@ $ knot -o project_name
 ```
 And also deregister it:
 ```sh
-knot -d project_name
+$ knot -d project_name
 ```
 By default, it will open `nautilus` on the project directory and all the `.kra` files in the last batch. There is currently no way to change the file explorer short of recompiling the tool.
 
