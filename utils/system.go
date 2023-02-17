@@ -80,8 +80,8 @@ func CopyFile(src, dst string) (int64, error) {
 	}
 
 	source, err := os.Open(src)
-	if err != nil { return 0, err }
 	defer source.Close()
+	if err != nil { return 0, err }
 
 	dstStat, err := os.Stat(dst)
 	if err == nil && dstStat.IsDir() {
