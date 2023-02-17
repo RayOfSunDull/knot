@@ -50,14 +50,14 @@ func OpenFile(file string, open bool) error {
 
 	switch extension {
 	case ".kra":
-		cmd := exec.Command("krita", file)
-		return cmd.Run()
+		cmd := exec.Command("nohup", "krita", file)
+		return cmd.Start()
 	case ".pdf":
-		cmd := exec.Command("evince", file)
-		return cmd.Run()
+		cmd := exec.Command("nohup", "evince", file)
+		return cmd.Start()
 	case "": // directory
 		cmd := exec.Command("nautilus", file)
-		return cmd.Run()
+		return cmd.Start()
 	default:
 		return errors.New(fmt.Sprintf(
 			"extension %s is unsupported", extension))
