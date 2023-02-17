@@ -11,33 +11,26 @@ import (
 
 
 type SystemInfo struct {
-	KnotDir string
 	Wd string
-	Exe string
+	ConfigDir string
 	ProjectsFile string
 	TemplateDir string
 }
 
 func GetSystemInfo() (SystemInfo, error) {
 	wd, err := os.Getwd()
-	if err != nil { 
-		return SystemInfo{}, err
-	}
+	if err != nil { return SystemInfo{}, err }
 
-	exe, ok := os.Executable()
-	if ok != nil { 
-		return SystemInfo{}, ok
-	}
+	homeDir, err := os.UserHomeDir()
+	if err != nil { return SystemInfo{}, err }
 
-	bin := filepath.Dir(exe)
-	knotDir := filepath.Dir(bin)
-	projectsFile := filepath.Join(knotDir, "projects.json")
-	templateDir := filepath.Join(knotDir, "templates")
+	configDir := filepath.Join(homeDir, ".config", "knot")
+	projectsFile := filepath.Join(configDir, "projects.json")
+	templateDir := filepath.Join(configDir, "templates")
 
 	return SystemInfo{
-		KnotDir: knotDir,
 		Wd: wd,
-		Exe: exe,
+		ConfigDir: configDir,
 		ProjectsFile: projectsFile,
 		TemplateDir: templateDir}, nil
 }
