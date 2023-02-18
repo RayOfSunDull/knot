@@ -136,7 +136,8 @@ func FindFirstParentProjectInfo(wd string, projects *Projects, projectsByDir *ma
 	}
 	wdParent := filepath.Dir(wd)
 	if wd == wdParent {
-		return ProjectInfo{}, errors.New("working directory is not part of a project")
+		return ProjectInfo{}, errors.New(
+			"working directory is not part of a project")
 	}
 	return FindFirstParentProjectInfo(wdParent, projects, projectsByDir)
 }
