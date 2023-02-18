@@ -22,7 +22,6 @@ func GetEnvironmentVariables() map[string]string {
 
 		result[key] = value
 	}
-
 	return result
 }
 
@@ -40,14 +39,14 @@ func GetKnotWD() (string, error) {
 
 
 type SystemInfo struct {
-	Wd string
+	WD string
 	ConfigDir string
 	ProjectsFile string
 	TemplateDir string
 }
 
 func GetSystemInfo() (SystemInfo, error) {
-	wd, err := os.Getwd()
+	wd, err := GetKnotWD()
 	if err != nil { return SystemInfo{}, err }
 
 	homeDir, err := os.UserHomeDir()
@@ -58,7 +57,7 @@ func GetSystemInfo() (SystemInfo, error) {
 	templateDir := filepath.Join(configDir, "templates")
 
 	return SystemInfo{
-		Wd: wd,
+		WD: wd,
 		ConfigDir: configDir,
 		ProjectsFile: projectsFile,
 		TemplateDir: templateDir}, nil
