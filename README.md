@@ -24,11 +24,23 @@ This repository includes a compiled binary which may work for you. You can clone
 ```sh
 $ git clone https://github.com/RayOfSunDull/knot
 ```
-And add it to your path (add this line to `~/.bashrc` if you want access to it in all shells):
-```sh
-$ export PATH="/path_to_repo/knot/bin:$PATH"
+You may use the install script to install it:
 ```
-You may also compile it using the `go` compiler. Simply run `knot/build.sh` (note that `$PWD` must be the directory of the program). There are no build dependencies other than the go standard library.
+$ cd path_to_repo
+$ chmod +x ./install.sh
+$ ./install.sh
+```
+If you don't want to run the script, what it does is basically this: 
+* move the executable from `path_to_repo/bin` to `~/bin`
+* move the template directory from `path_to_repo/templates` to `~/.config/knot`
+* move `path_to_repo/projects.json` to `~/.config/knot` if it exists, otherwise create it
+
+You may also compile it using the `go` compiler:
+```
+$ cd path_to_repo
+$ ./build.sh
+```
+There are no build dependencies other than the go standard library.
 
 ## Basic Usage
 ### silent mode
