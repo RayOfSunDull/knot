@@ -115,7 +115,7 @@ func main() {
 		
 		err = knot.OpenKraFilesInBatch(
 			&info, latestBatch, open)
-		fmt.Println(info, latestBatch)
+		
 		if err != nil { log.Fatal(err) }
 	}
 
