@@ -13,12 +13,12 @@ import (
 func GetEnvironmentVariables() map[string]string {
 	environment := os.Environ()
 
-	result = make(map[string]string, len(environment))
+	result := make(map[string]string, len(environment))
 
-	for idx, keyValueString := range environment {
+	for _, keyValueString := range environment {
 		keyValuePair := strings.Split(keyValueString, "=")
 
-		key, value = keyValuePair[0], keyValuePair[1]
+		key, value := keyValuePair[0], keyValuePair[1]
 
 		result[key] = value
 	}
@@ -31,7 +31,7 @@ func GetKnotWD() (string, error) {
 	knotwd, ok := envVar["KNOTWD"]
 	if ok { return knotwd, nil }
 
-	pwd, err = os.Getwd()
+	pwd, err := os.Getwd()
 	if err != nil { return "", err }
 
 	return pwd, nil
