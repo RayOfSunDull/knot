@@ -11,7 +11,7 @@ import (
 )
 
 
-type tempConfigInfo struct {
+type TempConfigInfo struct {
 	Knotdir string
 }
 
@@ -32,7 +32,7 @@ func GetSystemInfo() (SystemInfo, error) {
 
 	tempConfigBytes, errRead := os.ReadFile(tempConfigFile)
 
-	var tci tempConfigInfo
+	var tci TempConfigInfo
 	errUnmarshal := json.Unmarshal(tempConfigBytes, &tci)
 
 	if errRead == nil && errUnmarshal == nil {
@@ -61,7 +61,7 @@ func GetSystemInfo() (SystemInfo, error) {
 }
 
 
-func SetTempConfigInfo(si *SystemInfo, tci *tempConfigInfo) error {
+func SetTempConfigInfo(si *SystemInfo, tci *TempConfigInfo) error {
 	tempConfigInfoBytes, err := json.MarshalIndent(*tci, "", "\t")
 	if err != nil { return err }
 
