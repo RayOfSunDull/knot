@@ -4,50 +4,46 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"encoding/json"
 	"path/filepath"
 	"errors"
-	"strings"
 	"io"
 )
 
-func GetEnvironmentVariables() map[string]string {
-	environment := os.Environ()
 
-	result := make(map[string]string, len(environment))
-
-	for _, keyValueString := range environment {
-		keyValuePair := strings.Split(keyValueString, "=")
-
-		key, value := keyValuePair[0], keyValuePair[1]
-
-		result[key] = value
-	}
-	return result
-}
-
-func GetKnotWD() (string, error) {
-	envVar := GetEnvironmentVariables()
-
-	knotwd, ok := envVar["KNOTWD"]
-	if ok { return knotwd, nil }
-
-	pwd, err := os.Getwd()
-	if err != nil { return "", err }
-
-	return pwd, nil
+type tempConfigInfo struct {
+	Knotdir string
 }
 
 
 type SystemInfo struct {
 	WD string
 	ConfigDir string
+	TempConfigFile string
 	ProjectsFile string
 	TemplateDir string
 }
 
+
 func GetSystemInfo() (SystemInfo, error) {
-	wd, err := GetKnotWD()
-	if err != nil { return SystemInfo{}, err }
+	var wd string
+
+	tempConfigFile := filepath.Join("/tmp", "knotconfig.json")
+
+	tempConfigBytes, errRead := os.ReadFile(tempConfigFile)
+
+	var tci tempConfigInfo
+	errUnmarshal := json.Unmarshal(tempConfigBytes, &tci)
+
+	if errRead == nil && errUnmarshal == nil {
+		wd = tci.Knotdir
+		fmt.Println("hi", wd)
+	} else {
+		pwd, err := os.Getwd()
+		if err != nil { return SystemInfo{}, err }
+
+		wd = pwd
+	}
 
 	homeDir, err := os.UserHomeDir()
 	if err != nil { return SystemInfo{}, err }
@@ -59,6 +55,7 @@ func GetSystemInfo() (SystemInfo, error) {
 	return SystemInfo{
 		WD: wd,
 		ConfigDir: configDir,
+		TempConfigFile: tempConfigFile,
 		ProjectsFile: projectsFile,
 		TemplateDir: templateDir}, nil
 }
