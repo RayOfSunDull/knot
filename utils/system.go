@@ -61,6 +61,29 @@ func GetSystemInfo() (SystemInfo, error) {
 }
 
 
+func SetTempConfigInfo(si *SystemInfo, tci *tempConfigInfo) error {
+	tempConfigInfoBytes, err := json.MarshalIndent(*tci, "", "\t")
+	if err != nil { return err }
+
+	var tempConfigFile *os.File
+
+	tempConfigFileName := si.TempConfigFile
+
+	_, err = os.Stat(tempConfigFileName)
+	if err == nil { 
+		tempConfigFile, err = os.Open(tempConfigFileName)
+		if err != nil { return err }
+	} else {
+		tempConfigFile, err = os.Create(tempConfigFileName)
+		if err != nil { return err }
+	}
+	defer tempConfigFile.Close()
+
+	_, err = tempConfigFile.Write(tempConfigInfoBytes)
+	return err
+}
+
+
 func OpenFile(file string, open bool) error {
 	if !open { return nil }
 
