@@ -12,7 +12,7 @@ import (
 
 
 type TempConfigInfo struct {
-	Knotdir string
+	KnotWD string
 }
 
 
@@ -36,7 +36,7 @@ func GetSystemInfo() (SystemInfo, error) {
 	errUnmarshal := json.Unmarshal(tempConfigBytes, &tci)
 
 	if errRead == nil && errUnmarshal == nil {
-		wd = tci.Knotdir
+		wd = tci.KnotWD
 	} else {
 		pwd, err := os.Getwd()
 		if err != nil { return SystemInfo{}, err }
