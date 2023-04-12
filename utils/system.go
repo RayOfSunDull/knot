@@ -82,8 +82,11 @@ func SetTempConfigInfo(si *SystemInfo, tci *TempConfigInfo) error {
 
 
 func SetTempKnotWD(si *SystemInfo, knotWD string) error {
+	absKnotWD, err := filepath.Abs(knotWD)
+	if err != nil { return err }
+
 	return SetTempConfigInfo(
-		si, &TempConfigInfo{KnotWD: knotWD})
+		si, &TempConfigInfo{KnotWD: absKnotWD})
 }
 
 

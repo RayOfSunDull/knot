@@ -137,9 +137,7 @@ func main() {
 	}
 
 	if flags.SetWD != "" {
-		absWD, err := filepath.Abs(flags.SetWD)
-
-		err = knot.SetTempKnotWD(&systemInfo, absWD)
+		err := knot.SetTempKnotWD(&systemInfo, flags.SetWD)
 
 		if err != nil { log.Fatal(err) }
 	}
