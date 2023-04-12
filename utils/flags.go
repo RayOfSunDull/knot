@@ -22,6 +22,8 @@ type Flags struct {
 	OpenProject string
 	OpenBatch int
 	ListProjects bool
+	PrintWD bool
+	SetWD bool
 }
 
 func GetFlags() Flags {
@@ -57,6 +59,10 @@ func GetFlags() Flags {
 
 	listProjectsPtr := flag.Bool("l", false, "list all registered projects")
 
+	printWD := flag.Bool("pwd", false, "print the current knot working directory")
+
+	setWD := flag.Bool("wd", false, "set the current knot working directory")
+
 	flag.Parse()
 
 	return Flags{
@@ -75,5 +81,7 @@ func GetFlags() Flags {
 		DeregisterProject:		*deregisterProjectPtr,
 		OpenProject:			*openProjectPtr,
 		OpenBatch:				*openBatchPtr,
-		ListProjects:			*listProjectsPtr}
+		ListProjects:			*listProjectsPtr,
+		PrintWD:				*printWD,
+		setWD:					*setWD}
 }
