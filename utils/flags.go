@@ -83,5 +83,5 @@ func GetFlags() Flags {
 		OpenBatch:				*openBatchPtr,
 		ListProjects:			*listProjectsPtr,
 		PrintWD:				*printWD,
-		setWD:					*setWD}
+		SetWD:					*setWD}
 }
