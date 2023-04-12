@@ -70,7 +70,15 @@ $ knot -d project_name
 By default, it will open `nautilus` on the project directory and all the `.kra` files in the last batch. There is currently no way to change the file explorer short of recompiling the tool.
 
 ### Managing batches
-Once your working directory is **inside** the project directory somewhere, you may run:
+Once you've initialised or opened an already existing project, the temporary knot working directory is set to the directory of that project. You may check this using:
+```sh
+$ knot -pwd
+```
+You may also set the knot working directory manually
+```sh
+$ knot -wd working_dir
+```
+If the knot working directory is inside a project, you may run commands affecting it, for example:
 ```sh
 $ knot -b
 ```
