@@ -64,16 +64,15 @@ func SetTempConfigInfo(si *SystemInfo, tci *TempConfigInfo) error {
 	tempConfigInfoBytes, err := json.MarshalIndent(*tci, "", "\t")
 	if err != nil { return err }
 
-	var tempConfigFile *os.File
-
 	tempConfigFileName := si.TempConfigFile
 
 	_, err = os.Stat(tempConfigFileName)
 	if err == nil { 
-		tempConfigFile, err = os.Open(tempConfigFileName)
-	} else {
-		tempConfigFile, err = os.Create(tempConfigFileName)
+		err = os.Remove(tempConfigFileName)
+		if err != nil { return err }
 	}
+
+	tempConfigFile, err := os.Create(tempConfigFileName)
 	if err != nil { return err }
 	defer tempConfigFile.Close()
 
