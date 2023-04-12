@@ -82,7 +82,7 @@ func SetTempConfigInfo(si *SystemInfo, tci *TempConfigInfo) error {
 }
 
 
-func SetKnotWD(si *SystemInfo, knotWD string) error {
+func SetTempKnotWD(si *SystemInfo, knotWD string) error {
 	return SetTempConfigInfo(
 		si, &TempConfigInfo{KnotWD: knotWD})
 }
