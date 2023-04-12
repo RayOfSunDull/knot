@@ -5,9 +5,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	// "github.com/phpdave11/gofpdf"
-	// "github.com/phpdave11/gofpdf/contrib/gofpdi"
 )
+
 
 func ExportToPNG(src, dst string) error {
 	dstStat, err := os.Stat(dst)
@@ -22,6 +21,7 @@ func ExportToPNG(src, dst string) error {
 	return cmd.Run()
 }
 
+
 func ConvertToPDF(src string) error {
 	dst := ChangeFileExt(src, "pdf")
 
@@ -29,7 +29,8 @@ func ConvertToPDF(src string) error {
 	// requires imagemagick
 	return cmd.Run()
 }
-// gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress -sOutputFile=merged.pdf mine1.pdf mine2.pdf
+
+
 func MergePDFs(srcFiles []string, dst string) error {
 	GSArgs := []string{
 		"-dBATCH", "-dNOPAUSE", "-q",
@@ -51,6 +52,7 @@ func MergePDFs(srcFiles []string, dst string) error {
 
 	return err
 }
+
 
 func ExportBatch(batchNumber int, pi *ProjectInfo) (string, error) {
 	batchPath := filepath.Join(

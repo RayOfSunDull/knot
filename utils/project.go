@@ -9,9 +9,6 @@ import (
 	"regexp"
 )
 
-func Hello() {
-	fmt.Println("hello world")
-}
 
 type ProjectInfo struct {
 	ProjectDir string
@@ -21,7 +18,9 @@ type ProjectInfo struct {
 	TemplateName string
 }
 
+
 type Projects map[string]ProjectInfo
+
 
 func (projects *Projects) Save(file string) error {
 	destination, err := os.Create(file)
@@ -34,6 +33,7 @@ func (projects *Projects) Save(file string) error {
 	_, err = destination.Write(infoAsBytes)
 	return err
 }
+
 
 func GetProjects(file string) (Projects, error) {
 	var result Projects
@@ -64,6 +64,7 @@ func GetExistingProjectInfo(file string, projectName string) (ProjectInfo, error
 
 	return result, err
 }
+
 
 func GetProjectInfo(flags *Flags, si *SystemInfo, projects *Projects) (ProjectInfo, error) {
 	projectName := flags.InitDirName
@@ -96,16 +97,13 @@ func GetContentRegexp(name string) *regexp.Regexp {
 	return result
 }
 
+
 func GetPageRegexp(extension string) *regexp.Regexp {
 	result, _ := regexp.Compile(fmt.Sprintf(
 		"^page-[0-9]+%s$", extension))
 	return result
 }
 
-// func GetContentFileRegexp(name string) (*regexp.Regexp, error) {
-// 	return regexp.Compile(fmt.Sprintf(
-// 		"^%s-[0-9]+-[0-9]+.kra", name))
-// }
 
 func NumberOfMatches(dirPath string, re *regexp.Regexp) (int, error) {
 	dir, err := os.ReadDir(dirPath)
@@ -119,6 +117,7 @@ func NumberOfMatches(dirPath string, re *regexp.Regexp) (int, error) {
 	}
 	return result, nil
 }
+
 
 func ArrangeProjectsByDir(projects *Projects) map[string]string {
 	result := make(map[string]string)
@@ -141,5 +140,3 @@ func FindFirstParentProjectInfo(wd string, projects *Projects, projectsByDir *ma
 	}
 	return FindFirstParentProjectInfo(wdParent, projects, projectsByDir)
 }
-
-// func LoadProjects()

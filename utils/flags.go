@@ -2,7 +2,6 @@ package knot
 
 import (
 	"flag"
-	// "path/filepath"
 )
 
 type Flags struct {

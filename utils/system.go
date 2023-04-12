@@ -111,11 +111,13 @@ func OpenFile(file string, open bool) error {
 	}
 }
 
+
 func CreateFile(path string) error {
 	file, ok := os.Create(path)
 	file.Close()
 	return ok
 }
+
 
 func CopyFile(src, dst string) (int64, error) {
 	srcStat, err := os.Stat(src)
@@ -142,6 +144,7 @@ func CopyFile(src, dst string) (int64, error) {
 	nBytes, err := io.Copy(destination, source)
 	return nBytes, err
 }
+
 
 func CopyDir(src, dst string) error {
 	srcName := filepath.Base(src)
@@ -177,6 +180,7 @@ func CopyDir(src, dst string) error {
 	return nil
 }
 
+
 func MoveFile(src, dst string) (int, error) {
 	srcStat, err := os.Stat(src)
 	if err != nil { return 0, err }
@@ -203,6 +207,7 @@ func MoveFile(src, dst string) (int, error) {
 	return destination.Write(sourceBytes)
 }
 
+
 func EnsureDirExists(dirName string) error {
 	if _, err := os.Stat(dirName); err != nil {
 		err = os.MkdirAll(dirName, os.ModePerm)
@@ -211,9 +216,11 @@ func EnsureDirExists(dirName string) error {
 	return nil
 }
 
+
 func FileWithoutExt(fileName string) string {
 	return fileName[:len(fileName) - len(filepath.Ext(fileName))]
 }
+
 
 func ChangeFileExt(fileName string, newExtension string) string {
 	return fmt.Sprintf(

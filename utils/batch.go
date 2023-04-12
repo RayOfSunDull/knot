@@ -5,17 +5,18 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	// "errors"
 )
 
 func GetBatchName(pi *ProjectInfo, batchNumber int) string {
 	return fmt.Sprintf("%s-%d", pi.ContentName, batchNumber)
 }
 
+
 func GetBatchDir(pi *ProjectInfo, batchNumber int) string {
 	return filepath.Join(
 		pi.ContentDir, GetBatchName(pi, batchNumber))
 }
+
 
 func GetPageName(pageNumber int) string {
 	return fmt.Sprintf("page-%d.kra", pageNumber)
@@ -76,6 +77,7 @@ func MakePage(templatePath string, pi *ProjectInfo, batchNumber int, open bool) 
 
 	return nil
 }
+
 
 func OpenKraFilesInBatch(pi *ProjectInfo, batchNumber int, open bool) error {
 	if !open { return nil }
