@@ -23,7 +23,7 @@ type Flags struct {
 	OpenBatch int
 	ListProjects bool
 	PrintWD bool
-	SetWD bool
+	SetWD string
 }
 
 func GetFlags() Flags {
@@ -61,7 +61,7 @@ func GetFlags() Flags {
 
 	printWD := flag.Bool("pwd", false, "print the current knot working directory")
 
-	setWD := flag.Bool("wd", false, "set the current knot working directory")
+	setWD := flag.String("wd", "", "set the current knot working directory")
 
 	flag.Parse()
 
