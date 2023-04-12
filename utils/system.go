@@ -37,7 +37,6 @@ func GetSystemInfo() (SystemInfo, error) {
 
 	if errRead == nil && errUnmarshal == nil {
 		wd = tci.Knotdir
-		fmt.Println("hi", wd)
 	} else {
 		pwd, err := os.Getwd()
 		if err != nil { return SystemInfo{}, err }
