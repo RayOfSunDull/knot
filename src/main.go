@@ -38,6 +38,9 @@ func main() {
 		if err != nil { log.Fatal(err) }
 
 		projects[projectName] = projectInfo
+
+		err = knot.SetTempKnotWD(&systemInfo, flags.InitDirName)
+		if err != nil { log.Fatal(err) }
 	}
 
 	if flags.NextBatch {
@@ -115,7 +118,9 @@ func main() {
 		
 		err = knot.OpenKraFilesInBatch(
 			&info, latestBatch, open)
-		
+		if err != nil { log.Fatal(err) }
+
+		err = knot.SetTempKnotWD(&systemInfo, info.ProjectDir)
 		if err != nil { log.Fatal(err) }
 	}
 
@@ -138,7 +143,6 @@ func main() {
 
 	if flags.SetWD != "" {
 		err := knot.SetTempKnotWD(&systemInfo, flags.SetWD)
-
 		if err != nil { log.Fatal(err) }
 	}
 
