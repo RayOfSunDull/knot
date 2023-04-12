@@ -82,6 +82,12 @@ func SetTempConfigInfo(si *SystemInfo, tci *TempConfigInfo) error {
 }
 
 
+func SetKnotWD(si *SystemInfo, knotWD string) error {
+	return SetTempConfigInfo(
+		si, &TempConfigInfo{KnotWD: knotWD})
+}
+
+
 func OpenFile(file string, open bool) error {
 	if !open { return nil }
 
