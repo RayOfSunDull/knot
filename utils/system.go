@@ -71,11 +71,10 @@ func SetTempConfigInfo(si *SystemInfo, tci *TempConfigInfo) error {
 	_, err = os.Stat(tempConfigFileName)
 	if err == nil { 
 		tempConfigFile, err = os.Open(tempConfigFileName)
-		if err != nil { return err }
 	} else {
 		tempConfigFile, err = os.Create(tempConfigFileName)
-		if err != nil { return err }
 	}
+	if err != nil { return err }
 	defer tempConfigFile.Close()
 
 	_, err = tempConfigFile.Write(tempConfigInfoBytes)
