@@ -132,6 +132,18 @@ func main() {
 		}
 	}
 
+	if flags.PrintWD {
+		fmt.Println(systemInfo.WD)
+	}
+
+	if flags.SetWD != "" {
+		absWD, err := filepath.Abs(flags.SetWD)
+
+		err = knot.SetTempKnotWD(&systemInfo, absWD)
+
+		if err != nil { log.Fatal(err) }
+	}
+
 	if err = projects.Save(systemInfo.ProjectsFile); err != nil {
 		log.Fatal(err)
 	}
