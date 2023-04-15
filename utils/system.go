@@ -17,7 +17,7 @@ type TempConfigInfo struct {
 
 
 type SystemInfo struct {
-	WD string
+	KnotWD string
 	ConfigDir string
 	TempConfigFile string
 	ProjectsFile string
@@ -51,7 +51,7 @@ func GetSystemInfo() (SystemInfo, error) {
 	templateDir := filepath.Join(configDir, "templates")
 
 	return SystemInfo{
-		WD: wd,
+		KnotWD: wd,
 		ConfigDir: configDir,
 		TempConfigFile: tempConfigFile,
 		ProjectsFile: projectsFile,

@@ -138,7 +138,7 @@ func main() {
 	}
 
 	if flags.PrintWD {
-		fmt.Println(systemInfo.WD)
+		fmt.Println(systemInfo.KnotWD)
 	}
 
 	if flags.SetWD != "" {

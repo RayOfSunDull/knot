@@ -71,10 +71,10 @@ func GetProjectInfo(flags *Flags, si *SystemInfo, projects *Projects) (ProjectIn
 	if projectName == "" { // see if $PWD is inside a project
 		projectsByDir := ArrangeProjectsByDir(projects)
 		return FindFirstParentProjectInfo(
-			si.WD, projects, &projectsByDir)
+			si.KnotWD, projects, &projectsByDir)
 	}
 
-	projectDir := filepath.Join(si.WD, projectName)
+	projectDir := filepath.Join(si.KnotWD, projectName)
 
 	contentDir := filepath.Join(projectDir, flags.ContentDirName)
 	contentName := flags.ContentName
