@@ -17,7 +17,7 @@ type TempConfigInfo struct {
 
 
 type SystemInfo struct {
-	KnotWD string
+	TempConfigInfo
 	ConfigDir string
 	TempConfigFile string
 	ProjectsFile string
@@ -26,8 +26,6 @@ type SystemInfo struct {
 
 
 func GetSystemInfo() (SystemInfo, error) {
-	var knotWD string
-
 	tempConfigFile := filepath.Join("/tmp", "knotconfig.json")
 
 	tempConfigBytes, errRead := os.ReadFile(tempConfigFile)
@@ -35,12 +33,11 @@ func GetSystemInfo() (SystemInfo, error) {
 	var tci TempConfigInfo
 	errUnmarshal := json.Unmarshal(tempConfigBytes, &tci)
 
-	if errRead == nil && errUnmarshal == nil {
-		knotWD = tci.KnotWD
-	} else {
-		var err error
-		knotWD, err = os.Getwd()
+	if errRead != nil || errUnmarshal != nil {
+		knotWD, err := os.Getwd()
 		if err != nil { return SystemInfo{}, err }
+
+		tci = TempConfigInfo{KnotWD: knotWD}
 	}
 
 	homeDir, err := os.UserHomeDir()
@@ -51,7 +48,7 @@ func GetSystemInfo() (SystemInfo, error) {
 	templateDir := filepath.Join(configDir, "templates")
 
 	return SystemInfo{
-		KnotWD: knotWD,
+		TempConfigInfo: tci,
 		ConfigDir: configDir,
 		TempConfigFile: tempConfigFile,
 		ProjectsFile: projectsFile,
