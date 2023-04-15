@@ -38,10 +38,9 @@ func GetSystemInfo() (SystemInfo, error) {
 	if errRead == nil && errUnmarshal == nil {
 		wd = tci.KnotWD
 	} else {
-		pwd, err := os.Getwd()
+		var err error
+		wd, err = os.Getwd()
 		if err != nil { return SystemInfo{}, err }
-
-		wd = pwd
 	}
 
 	homeDir, err := os.UserHomeDir()
