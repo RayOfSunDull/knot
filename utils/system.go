@@ -18,8 +18,8 @@ type ConfigInfo struct {
 
 
 func (ci *ConfigInfo) SetDefaults() {
-	if ci.PDFReader == "" { ci.PDFReader =  "evince" }
-	if ci.FileExplorer == "" { ci.FileExplorer =  "nautilus" }
+	if ci.PDFReader == "" { ci.PDFReader = "evince" }
+	if ci.FileExplorer == "" { ci.FileExplorer = "nautilus" }
 }
 
 
