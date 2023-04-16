@@ -126,10 +126,9 @@ Open config.json with your preferred editor and paste the settings:
     "FileExplorer": "your-preferred-file-explorer",
 }
 ```
-The string passed to each setting must be the name of the **command line utility** that opens the appropriate program. Currently it's not possible to configure your commands to accept extra options for the viewers. If you're going to change this file, do not delete any of the fields, because then knot will not use the default (to be fixed).
+The string passed to each setting must be the name of the **command line utility** that opens the appropriate program. Currently it's not possible to configure your commands to accept extra options for the viewers.
 
 ### Roadmap
-* Fix the above mentioned config bug
 * Allow for more configurable viewer commands
 * Perhaps refactor to get rid of duplicate code
 * Use gopdf library instead of imagemagick and ghostscript external tools
