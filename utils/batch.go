@@ -23,7 +23,7 @@ func GetPageName(pageNumber int) string {
 }
 
 
-func MakeBatch(templatePath string, pi *ProjectInfo, batchNumber int, open bool) error {
+func MakeBatch(templatePath string, si *SystemInfo, pi *ProjectInfo, batchNumber int, open bool) error {
 	templateBatchDir := filepath.Join(templatePath, "batch")
 
 	newBatchDir := filepath.Join(
@@ -38,7 +38,7 @@ func MakeBatch(templatePath string, pi *ProjectInfo, batchNumber int, open bool)
 		filepath.Join(newBatchDir, "page.kra"),
 		page0)
 
-	OpenFile(page0, open)
+	OpenFile(si, page0, open)
 	return err
 }
 
@@ -56,11 +56,11 @@ func CreateProject(templatePath string, si *SystemInfo, pi *ProjectInfo, open bo
 		return err
 	}
 
-	return MakeBatch(templatePath, pi, 0, open)
+	return MakeBatch(templatePath, si, pi, 0, open)
 }
 
 
-func MakePage(templatePath string, pi *ProjectInfo, batchNumber int, open bool) error {
+func MakePage(templatePath string, si *SystemInfo, pi *ProjectInfo, batchNumber int, open bool) error {
 	batchDir := GetBatchDir(pi, batchNumber)
 		
 	pageNumber, err := NumberOfMatches(
@@ -73,7 +73,7 @@ func MakePage(templatePath string, pi *ProjectInfo, batchNumber int, open bool) 
 		newPage)
 	if err != nil { return err }
 	
-	OpenFile(newPage, open)
+	OpenFile(si, newPage, open)
 
 	return nil
 }

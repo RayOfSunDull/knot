@@ -108,7 +108,7 @@ func SetTempKnotWD(si *SystemInfo, knotWD string) error {
 }
 
 
-func OpenFile(file string, open bool) error {
+func OpenFile(si *SystemInfo, file string, open bool) error {
 	if !open { return nil }
 
 	extension := filepath.Ext(file)
@@ -118,10 +118,10 @@ func OpenFile(file string, open bool) error {
 		cmd := exec.Command("nohup", "krita", file)
 		return cmd.Start()
 	case ".pdf":
-		cmd := exec.Command("nohup", "evince", file)
+		cmd := exec.Command("nohup", si.PDFReader, file)
 		return cmd.Start()
 	case "": // directory
-		cmd := exec.Command("nautilus", file)
+		cmd := exec.Command(si.FileExplorer, file)
 		return cmd.Start()
 	default:
 		return errors.New(fmt.Sprintf(

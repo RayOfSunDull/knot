@@ -48,12 +48,15 @@ func main() {
 			projectInfo.ContentDir, contentRegexp)
 		if err != nil { log.Fatal(err) }
 
-		knot.MakeBatch(templatePath, &projectInfo, batchNumber, open)
+		knot.MakeBatch(
+			templatePath, &systemInfo, &projectInfo, 
+			batchNumber, open)
 	}
 
 	if flags.SpecifiedBatch >= 0 {
 		knot.MakeBatch(
-			templatePath, &projectInfo, flags.SpecifiedBatch, open)
+			templatePath, &systemInfo, &projectInfo, 
+			flags.SpecifiedBatch, open)
 	}
 
 	if flags.NextPage {
@@ -62,12 +65,15 @@ func main() {
 		if err != nil { log.Fatal(err) }
 		latestBatch -= 1
 		
-		knot.MakePage(templatePath, &projectInfo, latestBatch, open)
+		knot.MakePage(
+			templatePath, &systemInfo, &projectInfo, 
+			latestBatch, open)
 	}
 
 	if flags.SpecifiedPage >= 0 {
 		knot.MakePage(
-			templatePath, &projectInfo, flags.SpecifiedPage, open)
+			templatePath, &systemInfo, &projectInfo, 
+			flags.SpecifiedPage, open)
 	}
 
 	if flags.ExportLatestBatch {
@@ -79,7 +85,7 @@ func main() {
 		output, err := knot.ExportBatch(latestBatch, &projectInfo)
 		if err != nil { log.Fatal(err) }
 
-		knot.OpenFile(output, open)
+		knot.OpenFile(&systemInfo, output, open)
 	}
 
 	if flags.ExportSpecifiedBatch >= 0 {
@@ -87,7 +93,7 @@ func main() {
 			flags.ExportSpecifiedBatch, &projectInfo)
 		if err != nil { log.Fatal(err) }
 
-		knot.OpenFile(output, open)
+		knot.OpenFile(&systemInfo, output, open)
 	}
 
 	if flags.DeregisterProject != "" {
@@ -108,7 +114,7 @@ func main() {
 		info, err := knot.GetExistingProjectInfo(
 			systemInfo.ProjectsFile, flags.OpenProject)
 		if err != nil { log.Fatal(err) }
-		knot.OpenFile(info.ProjectDir, true)
+		knot.OpenFile(&systemInfo, info.ProjectDir, true)
 
 		latestBatch, err := knot.NumberOfMatches(
 			info.ContentDir, 
