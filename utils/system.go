@@ -11,14 +11,22 @@ import (
 )
 
 
+type ConfigInfo struct {
+	PDFReader string
+	FileExplorer string
+}
+
+
 type TempConfigInfo struct {
 	KnotWD string
 }
 
 
 type SystemInfo struct {
+	ConfigInfo
 	TempConfigInfo
 	ConfigDir string
+	ConfigFile string
 	TempConfigFile string
 	ProjectsFile string
 	TemplateDir string
@@ -46,10 +54,24 @@ func GetSystemInfo() (SystemInfo, error) {
 	configDir := filepath.Join(homeDir, ".config", "knot")
 	projectsFile := filepath.Join(configDir, "projects.json")
 	templateDir := filepath.Join(configDir, "templates")
+	configFile := filepath.Join(configDir, "config.json")
+
+	configBytes, errRead := os.ReadFile(configFile)
+
+	var ci ConfigInfo
+	errUnmarshal = json.Unmarshal(configBytes, &ci)
+
+	if errRead != nil || errUnmarshal != nil {
+		ci = ConfigInfo{
+			PDFReader: "evince",
+			FileExplorer: "nautilus"}
+	}
 
 	return SystemInfo{
+		ConfigInfo: ci,
 		TempConfigInfo: tci,
 		ConfigDir: configDir,
+		ConfigFile: configFile,
 		TempConfigFile: tempConfigFile,
 		ProjectsFile: projectsFile,
 		TemplateDir: templateDir}, nil
