@@ -17,6 +17,12 @@ type ConfigInfo struct {
 }
 
 
+func (ci *ConfigInfo) SetDefaults() {
+	if ci.PDFReader == "" { ci.PDFReader =  "evince" }
+	if ci.FileExplorer == "" { ci.FileExplorer =  "nautilus" }
+}
+
+
 type TempConfigInfo struct {
 	KnotWD string
 }
@@ -56,16 +62,12 @@ func GetSystemInfo() (SystemInfo, error) {
 	templateDir := filepath.Join(configDir, "templates")
 	configFile := filepath.Join(configDir, "config.json")
 
-	configBytes, errRead := os.ReadFile(configFile)
+	configBytes, _ := os.ReadFile(configFile)
 
 	var ci ConfigInfo
-	errUnmarshal = json.Unmarshal(configBytes, &ci)
+	_ = json.Unmarshal(configBytes, &ci)
 
-	if errRead != nil || errUnmarshal != nil {
-		ci = ConfigInfo{
-			PDFReader: "evince",
-			FileExplorer: "nautilus"}
-	}
+	ci.SetDefaults()
 
 	return SystemInfo{
 		ConfigInfo: ci,
