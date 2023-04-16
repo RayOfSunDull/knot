@@ -43,7 +43,7 @@ $ ./build.sh
 There are no build dependencies other than the go standard library.
 
 ## Basic Usage
-### silent mode
+### Silent mode
 
 By default, many knot commands will open created files. If you don't want this, add this flag:
 ```sh
@@ -67,7 +67,7 @@ And also deregister it:
 ```sh
 $ knot -d project_name
 ```
-By default, it will open `nautilus` on the project directory and all the `.kra` files in the last batch. There is currently no way to change the file explorer short of recompiling the tool.
+By default, it will open `nautilus` on the project directory and all the `.kra` files in the last batch. The file viewer, as well as the pdf viewer can be changed. More info on that later.
 
 ### Managing batches
 Once you've initialised or opened an already existing project, the temporary knot working directory is set to the directory of that project. You may check this using:
@@ -107,3 +107,29 @@ It will be created at the top level of the batch and named `batch_name.pdf`. You
 $ knot -se batch_number
 ```
 There are a few more configurable options, such as batch names and the ability to generate batches in a subdirectory instead of the top level of the project. Please refer to `knot -h` for info on all commands.
+
+### Configuring knot
+You can configure the file explorer and pdf reader used by knot. The config directory can be accessed as such:
+```sh
+$ ls ~/.config/knot
+config.json  projects.json  templates
+```
+If there is no ``config.json`` file, you should create it:
+```sh
+$ cd ~/.config/knot
+$ touch config.json
+```
+Open config.json with your preferred editor and paste the settings:
+```json
+{
+    "PDFReader": "your-preferred-pdf-reader",
+    "FileExplorer": "your-preferred-file-explorer",
+}
+```
+The string passed to each setting must be the name of the **command line utility** that opens the appropriate program. Currently it's not possible to configure your commands to accept extra options for the viewers. If you're going to change this file, do not delete any of the fields, because then knot will not use the default (to be fixed).
+
+### Roadmap
+* Fix the above mentioned config bug
+* Allow for more configurable viewer commands
+* Perhaps refactor to get rid of duplicate code
+* Use gopdf library instead of imagemagick and ghostscript external tools
