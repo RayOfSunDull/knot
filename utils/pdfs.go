@@ -23,7 +23,19 @@ func ExportToPNG(src, dst string) error {
 }
 
 
-func ExportBatch(batchNumber int, pi *ProjectInfo) (string, error) {
+func CompressPDF(fileName string) error { // requires ghostscript
+	cmd := exec.Command(
+		"gs", "-dBATCH", "-dNOPAUSE", "-q",
+		"-sDEVICE=pdfwrite",
+		"-dPDFSETTINGS=/prepress",
+		fmt.Sprintf("-sOutputFile=%s", fileName),
+		fileName)
+
+	return cmd.Run()
+}
+
+
+func ExportBatch(batchNumber int, pi *ProjectInfo, compress bool) (string, error) {
 	batchPath := filepath.Join(
 		pi.ContentDir, GetBatchName(pi, batchNumber))
 
@@ -75,6 +87,8 @@ func ExportBatch(batchNumber int, pi *ProjectInfo) (string, error) {
 		batchPath, fmt.Sprintf("%s.pdf", filepath.Base(batchPath)))
 	
 	pdf.WritePdf(outputPath)
+
+	if compress { CompressPDF(outputPath) }
 
 	return outputPath, nil
 }
