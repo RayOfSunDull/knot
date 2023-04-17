@@ -12,12 +12,12 @@
         - ...
     * ...
 
-knot allows you to create and quickly open these projetcs, add batches, add pages to batches and export batches to pdf with simple commands. It has been compiled and tested for linux, and requires the following dependencies:
+knot allows you to create and quickly open these projetcs, add batches, add pages to batches and export batches to pdf with simple commands. It has been compiled and tested for linux, and has the following runtime dependencies:
 ```
 krita
-imagemagick
-ghostscript
+nohup
 ```
+In the future I intend to drop ``nohup`` as a dependency, but ``krita`` will be necessary, of course.
 
 ## Installation
 This repository includes a compiled binary which may work for you. You can clone it wherever you like:
@@ -38,9 +38,10 @@ If you don't want to run the script, what it does is basically this:
 You may also compile it using the `go` compiler:
 ```
 $ cd path_to_repo
+$ go get github.com/signintech/gopdf
 $ ./build.sh
 ```
-There are no build dependencies other than the go standard library.
+The ``gopdf`` package is now a build dependency and thus must be installed.
 
 ## Basic Usage
 ### Silent mode
@@ -129,6 +130,7 @@ Open config.json with your preferred editor and paste the settings:
 The string passed to each setting must be the name of the **command line utility** that opens the appropriate program. Currently it's not possible to configure your commands to accept extra options for the viewers.
 
 ### Roadmap
+* Tweak export function to only update pages if they have been changed
+* Tweak new page code to export the previous page immediately in the background
 * Allow for more configurable viewer commands
-* Perhaps refactor to get rid of duplicate code
-* Use gopdf library instead of imagemagick and ghostscript external tools
+* Allow for more configurable export settings
