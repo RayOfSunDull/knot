@@ -8,6 +8,33 @@ import (
 	"github.com/signintech/gopdf"
 )
 
+type CompressionLevel int
+
+const (
+	DEFAULT CompressionLevel = iota
+	PREPRESS
+	EBOOK
+)
+
+
+func IntToCompressionLevel(n int) CompressionLevel {
+	if n >= 0 && n <= 2 { return CompressionLevel(n) }
+	return CompressionLevel(0)
+}
+
+
+func CompressionLevelToGS(cl CompressionLevel) string {
+	switch cl {
+	case DEFAULT:
+		return "/default"
+	case PREPRESS:
+		return "/prepress"
+	case EBOOK:
+		return "/ebook"
+	}
+	return ""
+}
+
 
 func ExportToPNG(src, dst string) error {
 	dstStat, err := os.Stat(dst)
@@ -23,19 +50,31 @@ func ExportToPNG(src, dst string) error {
 }
 
 
-func CompressPDF(fileName string) error { // requires ghostscript
+// requires ghostscript
+func CompressPDF(fileName string, compressionLevel int) error {
+	compressedFileName := fmt.Sprintf("%s.pdf", fileName)
+
 	cmd := exec.Command(
 		"gs", "-dBATCH", "-dNOPAUSE", "-q",
 		"-sDEVICE=pdfwrite",
-		"-dPDFSETTINGS=/prepress",
-		fmt.Sprintf("-sOutputFile=%s", fileName),
+		fmt.Sprintf("-dPDFSETTINGS=%s", CompressionLevelToGS(
+			IntToCompressionLevel(compressionLevel))),
+		fmt.Sprintf("-sOutputFile=%s", compressedFileName),
 		fileName)
 
-	return cmd.Run()
+	err := cmd.Run()
+	if err != nil { return err }
+
+	err = os.Remove(fileName)
+	if err != nil { return err }
+	
+	err = os.Rename(compressedFileName, fileName)
+
+	return err
 }
 
 
-func ExportBatch(batchNumber int, pi *ProjectInfo, compress bool) (string, error) {
+func ExportBatch(batchNumber int, pi *ProjectInfo, compressionLevel int) (string, error) {
 	batchPath := filepath.Join(
 		pi.ContentDir, GetBatchName(pi, batchNumber))
 
@@ -88,7 +127,9 @@ func ExportBatch(batchNumber int, pi *ProjectInfo, compress bool) (string, error
 	
 	pdf.WritePdf(outputPath)
 
-	if compress { CompressPDF(outputPath) }
+	if compressionLevel != 0 { 
+		CompressPDF(outputPath, compressionLevel)
+	}
 
 	return outputPath, nil
 }
