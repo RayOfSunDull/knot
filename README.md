@@ -125,9 +125,11 @@ Open config.json with your preferred editor and paste the settings:
 {
     "PDFReader": "your-preferred-pdf-reader",
     "FileExplorer": "your-preferred-file-explorer",
+    "ExportCompression": 0,
+    "LegacyExport": false
 }
 ```
-The string passed to each setting must be the name of the **command line utility** that opens the appropriate program. Currently it's not possible to configure your commands to accept extra options for the viewers.
+The string passed to each setting must be the name of the **command line utility** that opens the appropriate program. Currently it's not possible to configure your commands to accept extra options for the viewers. You may set ``ExportCompression`` to 1 or 2 for higher compression, but be weary as this requires ``ghostscript``. The ``LegacyExport`` option requires ``ghostscript`` and ``imagemagick`` and should generally be avoided unless the regular export doesn't work.
 
 ### Roadmap
 * Tweak export function to only update pages if they have been changed
