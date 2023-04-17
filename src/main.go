@@ -82,7 +82,8 @@ func main() {
 		if err != nil { log.Fatal(err) }
 		latestBatch -= 1
 
-		output, err := knot.ExportBatch(latestBatch, &projectInfo)
+		output, err := knot.ExportBatch(
+			latestBatch, &projectInfo, systemInfo.ExportCompression)
 		if err != nil { log.Fatal(err) }
 
 		knot.OpenFile(&systemInfo, output, open)
@@ -90,7 +91,8 @@ func main() {
 
 	if flags.ExportSpecifiedBatch >= 0 {
 		output, err := knot.ExportBatch(
-			flags.ExportSpecifiedBatch, &projectInfo)
+			flags.ExportSpecifiedBatch, &projectInfo, 
+			systemInfo.ExportCompression)
 		if err != nil { log.Fatal(err) }
 
 		knot.OpenFile(&systemInfo, output, open)
