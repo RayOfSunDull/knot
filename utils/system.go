@@ -14,6 +14,8 @@ import (
 type ConfigInfo struct {
 	PDFReader string
 	FileExplorer string
+	CompressExport bool
+	LegacyExport bool
 }
 
 
