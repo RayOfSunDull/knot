@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"github.com/signintech/gopdf"
 )
 
 
@@ -20,6 +21,65 @@ func ExportToPNG(src, dst string) error {
 
 	return cmd.Run()
 }
+
+
+func ExportBatch(batchNumber int, pi *ProjectInfo) (string, error) {
+	batchPath := filepath.Join(
+		pi.ContentDir, GetBatchName(pi, batchNumber))
+
+	batchDir, err := os.ReadDir(batchPath)
+	if err != nil { return "", err }
+
+	exportPath := filepath.Join(batchPath, pi.ExportDirName)
+	if EnsureDirExists(exportPath) != nil {
+		return "", err
+	}
+
+	for _, item := range batchDir {
+		itemName := item.Name()
+		extension := filepath.Ext(itemName)
+		if extension != ".kra" || item.IsDir() { 
+			continue 
+		}
+
+		src := filepath.Join(batchPath, itemName)
+		
+		dst := filepath.Join(exportPath, 
+			ChangeFileExt(itemName, "png"))
+
+		ExportToPNG(src, dst)
+	}
+
+	exportDir, err := os.ReadDir(exportPath)
+	if err != nil { return "", err }
+
+	pageSizePtr := gopdf.PageSizeA4
+	pdf := gopdf.GoPdf{}
+	pdf.Start(gopdf.Config{PageSize: *pageSizePtr})
+	
+	for _, item := range exportDir {
+		itemName := item.Name()
+		extension := filepath.Ext(itemName)
+		if extension != ".png" || item.IsDir() { 
+			continue 
+		}
+
+		imgPath := filepath.Join(exportPath, itemName)
+		
+		pdf.AddPage()
+		pdf.Image(imgPath, 0, 0, pageSizePtr)
+	}
+
+	outputPath := filepath.Join(
+		batchPath, fmt.Sprintf("%s.pdf", filepath.Base(batchPath)))
+	
+	pdf.WritePdf(outputPath)
+
+	return outputPath, nil
+}
+
+
+// legacy functions (they require external dependencies)
 
 
 func ConvertToPDF(src string) error {
@@ -54,7 +114,7 @@ func MergePDFs(srcFiles []string, dst string) error {
 }
 
 
-func ExportBatch(batchNumber int, pi *ProjectInfo) (string, error) {
+func LegacyExportBatch(batchNumber int, pi *ProjectInfo) (string, error) {
 	batchPath := filepath.Join(
 		pi.ContentDir, GetBatchName(pi, batchNumber))
 
