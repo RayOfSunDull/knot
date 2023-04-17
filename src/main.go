@@ -81,19 +81,32 @@ func main() {
 			projectInfo.ContentDir, contentRegexp)
 		if err != nil { log.Fatal(err) }
 		latestBatch -= 1
-
-		output, err := knot.ExportBatch(
-			latestBatch, &projectInfo, systemInfo.ExportCompression)
-		if err != nil { log.Fatal(err) }
+		
+		var output string
+		if systemInfo.LegacyExport {
+			output, err = knot.LegacyExportBatch(latestBatch, &projectInfo)
+			if err != nil { log.Fatal(err) }
+		} else {
+			output, err = knot.ExportBatch(
+				latestBatch, &projectInfo, systemInfo.ExportCompression)
+			if err != nil { log.Fatal(err) }
+		}
 
 		knot.OpenFile(&systemInfo, output, open)
 	}
 
 	if flags.ExportSpecifiedBatch >= 0 {
-		output, err := knot.ExportBatch(
-			flags.ExportSpecifiedBatch, &projectInfo, 
-			systemInfo.ExportCompression)
-		if err != nil { log.Fatal(err) }
+		var output string
+		if systemInfo.LegacyExport {
+			output, err = knot.LegacyExportBatch(
+				flags.ExportSpecifiedBatch, &projectInfo)
+			if err != nil { log.Fatal(err) }
+		} else {
+			output, err = knot.ExportBatch(
+				flags.ExportSpecifiedBatch, &projectInfo, 
+				systemInfo.ExportCompression)
+			if err != nil { log.Fatal(err) }
+		}
 
 		knot.OpenFile(&systemInfo, output, open)
 	}
