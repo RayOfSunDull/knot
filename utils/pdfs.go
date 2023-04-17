@@ -49,7 +49,8 @@ func ExportBatch(batchNumber int, pi *ProjectInfo) (string, error) {
 
 		ExportToPNG(src, dst)
 	}
-
+	
+	pageRegexp := GetPageRegexp(".png")
 	exportDir, err := os.ReadDir(exportPath)
 	if err != nil { return "", err }
 
@@ -59,9 +60,9 @@ func ExportBatch(batchNumber int, pi *ProjectInfo) (string, error) {
 	
 	for _, item := range exportDir {
 		itemName := item.Name()
-		extension := filepath.Ext(itemName)
-		if extension != ".png" || item.IsDir() { 
-			continue 
+		
+		if item.IsDir() || !pageRegexp.Match([]byte(itemName)) {
+			continue
 		}
 
 		imgPath := filepath.Join(exportPath, itemName)
