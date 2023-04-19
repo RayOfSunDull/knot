@@ -3,6 +3,7 @@ package knot
 import (
 	"fmt"
 	"os"
+	"time"
 	"os/exec"
 	"path/filepath"
 	"github.com/signintech/gopdf"
@@ -37,11 +38,22 @@ func CompressionLevelToGS(cl CompressionLevel) string {
 
 
 func ExportToPNG(src, dst string) error {
+	srcStat, err := os.Stat(src)
+	if err != nil { return err }
+	srcModTime := srcStat.ModTime()
+
+	localLoc, _ := time.LoadLocation("Local")
+	dstModTime := time.Date(0,time.January,0,0,0,0,0,localLoc)
+
 	dstStat, err := os.Stat(dst)
-	if err == nil && dstStat.IsDir() {
-		dst = filepath.Join(dst, 
-			ChangeFileExt(filepath.Base(src), "png"))
+	if err == nil {
+		dstModTime = dstStat.ModTime()
 	}
+
+	if srcModTime.Before(dstModTime) {
+		return nil
+	}
+
 	cmd := exec.Command(
 		"krita", src, "--export", 
 		"--export-filename", dst)
