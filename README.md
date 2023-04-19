@@ -132,7 +132,6 @@ Open config.json with your preferred editor and paste the settings:
 The string passed to each setting must be the name of the **command line utility** that opens the appropriate program. Currently it's not possible to configure your commands to accept extra options for the viewers. You may set ``ExportCompression`` to 1 or 2 for higher compression, but be weary as this requires ``ghostscript``. The ``LegacyExport`` option requires ``ghostscript`` and ``imagemagick`` and should generally be avoided unless the regular export doesn't work.
 
 ### Roadmap
-* Tweak export function to only update pages if they have been changed
-* Tweak new page code to export the previous page immediately in the background
 * Allow for more configurable viewer commands
-* Allow for more configurable export settings
+* Look into writing a compression script in Python for portability
+* Make versions for Windows and MacOS
