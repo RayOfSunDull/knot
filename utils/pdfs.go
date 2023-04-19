@@ -3,9 +3,11 @@ package knot
 import (
 	"fmt"
 	"os"
+	"io"
 	"time"
 	"os/exec"
 	"path/filepath"
+	"archive/zip"
 	"github.com/signintech/gopdf"
 )
 
@@ -54,11 +56,18 @@ func ExportToPNG(src, dst string) error {
 		return nil
 	}
 
-	cmd := exec.Command(
-		"krita", src, "--export", 
-		"--export-filename", dst)
+	srcReader, err := zip.OpenReader(src)
+	if err != nil { return err }
+	defer srcReader.Close()
 
-	return cmd.Run()
+	pngData, err := srcReader.Open("mergedimage.png")
+	if err != nil { return err }
+
+	pngFile, err := os.Create(dst)
+	if err != nil { return err }
+
+	_, err = io.Copy(pngFile, pngData)
+	return err
 }
 
 
