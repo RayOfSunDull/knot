@@ -62,9 +62,11 @@ func ExportToPNG(src, dst string) error {
 
 	pngData, err := srcReader.Open("mergedimage.png")
 	if err != nil { return err }
+	defer pngData.Close()
 
 	pngFile, err := os.Create(dst)
 	if err != nil { return err }
+	defer pngFile.Close()
 
 	_, err = io.Copy(pngFile, pngData)
 	return err
