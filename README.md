@@ -19,16 +19,15 @@ nohup
 ```
 In the future I intend to drop ``nohup`` as a dependency, but ``krita`` will be necessary, of course.
 
-## Installation
+## Installation (Linux)
 This repository includes a compiled binary which may work for you. You can clone it wherever you like:
 ```sh
 $ git clone https://github.com/RayOfSunDull/knot
 ```
 You may use the install script to install it:
-```
+```sh
 $ cd path_to_repo
-$ chmod +x ./install.sh
-$ ./install.sh
+$ make install
 ```
 If you don't want to run the script, what it does is basically this: 
 * move the executable from `path_to_repo/bin` to `~/bin`
@@ -36,12 +35,12 @@ If you don't want to run the script, what it does is basically this:
 * move `path_to_repo/projects.json` to `~/.config/knot` if it exists, otherwise create it
 
 You may also compile it using the `go` compiler:
-```
+```sh
 $ cd path_to_repo
 $ go get github.com/signintech/gopdf
-$ ./build.sh
+$ make full # this will build and install
 ```
-The ``gopdf`` package is now a build dependency and thus must be installed.
+The ``gopdf`` package is now a build dependency and thus must be installed. 
 
 ## Basic Usage
 ### Silent mode
