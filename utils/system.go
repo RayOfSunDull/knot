@@ -119,10 +119,10 @@ func OpenFile(si *SystemInfo, file string, open bool) error {
 
 	switch extension {
 	case ".kra":
-		cmd := exec.Command("nohup", "krita", file)
+		cmd := exec.Command("krita", file)
 		return cmd.Start()
 	case ".pdf":
-		cmd := exec.Command("nohup", si.PDFReader, file)
+		cmd := exec.Command(si.PDFReader, file)
 		return cmd.Start()
 	case "": // directory
 		cmd := exec.Command(si.FileExplorer, file)
