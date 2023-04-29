@@ -12,12 +12,7 @@
         - ...
     * ...
 
-knot allows you to create and quickly open these projetcs, add batches, add pages to batches and export batches to pdf with simple commands. It has been compiled and tested for linux, and has the following runtime dependencies:
-```
-krita
-nohup
-```
-In the future I intend to drop ``nohup`` as a dependency, but ``krita`` will be necessary, of course.
+knot allows you to create and quickly open these projetcs, add batches, add pages to batches and export batches to pdf with simple commands. It has only been compiled and tested for linux, and only has ``krita`` as a runtime dependency.
 
 ## Installation (Linux)
 This repository includes a compiled binary which may work for you. You can clone it wherever you like:
