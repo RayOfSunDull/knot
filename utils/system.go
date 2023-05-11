@@ -14,14 +14,14 @@ import (
 type ConfigInfo struct {
 	PDFReader string
 	FileExplorer string
-	ExportCompression int
-	LegacyExport bool
+	ExportQuality int
 }
 
 
 func (ci *ConfigInfo) SetDefaults() {
 	if ci.PDFReader == "" { ci.PDFReader = "evince" }
 	if ci.FileExplorer == "" { ci.FileExplorer = "nautilus" }
+	if ci.ExportQuality == 0 { ci.ExportQuality = 100 }
 }
 
 
@@ -38,6 +38,7 @@ type SystemInfo struct {
 	TempConfigFile string
 	ProjectsFile string
 	TemplateDir string
+	ExporterBinary string
 }
 
 
@@ -63,6 +64,7 @@ func GetSystemInfo() (SystemInfo, error) {
 	projectsFile := filepath.Join(configDir, "projects.json")
 	templateDir := filepath.Join(configDir, "templates")
 	configFile := filepath.Join(configDir, "config.json")
+	exporterBinary := filepath.Join(configDir, "export")
 
 	configBytes, _ := os.ReadFile(configFile)
 
@@ -78,7 +80,8 @@ func GetSystemInfo() (SystemInfo, error) {
 		ConfigFile: configFile,
 		TempConfigFile: tempConfigFile,
 		ProjectsFile: projectsFile,
-		TemplateDir: templateDir}, nil
+		TemplateDir: templateDir,
+		ExporterBinary: exporterBinary}, nil
 }
 
 

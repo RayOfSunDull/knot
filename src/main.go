@@ -83,30 +83,20 @@ func main() {
 		latestBatch -= 1
 		
 		var output string
-		if systemInfo.LegacyExport {
-			output, err = knot.LegacyExportBatch(latestBatch, &projectInfo)
-			if err != nil { log.Fatal(err) }
-		} else {
-			output, err = knot.ExportBatch(
-				latestBatch, &projectInfo, systemInfo.ExportCompression)
-			if err != nil { log.Fatal(err) }
-		}
+		
+		output, err = knot.ExportBatch(
+			latestBatch, &projectInfo, &systemInfo)
+		if err != nil { log.Fatal(err) }
 
 		knot.OpenFile(&systemInfo, output, open)
 	}
 
 	if flags.ExportSpecifiedBatch >= 0 {
 		var output string
-		if systemInfo.LegacyExport {
-			output, err = knot.LegacyExportBatch(
-				flags.ExportSpecifiedBatch, &projectInfo)
-			if err != nil { log.Fatal(err) }
-		} else {
-			output, err = knot.ExportBatch(
-				flags.ExportSpecifiedBatch, &projectInfo, 
-				systemInfo.ExportCompression)
-			if err != nil { log.Fatal(err) }
-		}
+
+		output, err = knot.ExportBatch(
+			flags.ExportSpecifiedBatch, &projectInfo, &systemInfo)
+		if err != nil { log.Fatal(err) }
 
 		knot.OpenFile(&systemInfo, output, open)
 	}
