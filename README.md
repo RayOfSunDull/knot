@@ -131,7 +131,6 @@ Open config.json with your preferred editor and paste the settings:
 ```
 The string passed to each setting must be the name of the **command line utility** that opens the appropriate program. Currently it's not possible to configure your commands to accept extra options for the viewers. You may lower ``ExportQuality`` to save space, and this is recommended. Generaly the readability won't drop too much even if you set ``ExportQuality`` to 10 (implied 10%). Play around with it and find what best suits your needs.
 
-### Roadmap
-* Allow for more configurable viewer commands
-* Look into writing a compression script in Python for portability
-* Make versions for Windows and MacOS
+### Roadmap (tentative)
+* Switch to custom arg parser
+* Port to Windows and MacOS
