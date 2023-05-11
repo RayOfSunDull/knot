@@ -26,16 +26,23 @@ $ make install
 ```
 If you don't want to run the script, what it does is basically this: 
 * move the executable from `path_to_repo/bin` to `~/bin`
+* move export binary from ``path_to_repo/bin/export`` to ``~/.config/knot``
 * move the template directory from `path_to_repo/templates` to `~/.config/knot`
 * move `path_to_repo/projects.json` to `~/.config/knot` if it exists, otherwise create it
 
-You may also compile it using the `go` compiler:
+You may also build it from source, but since Python was added to the project this has become a bit more complicated. You need to have ``cython`` to convert the export script to a C file and ``gcc`` to compile it to a binary. First we need to set up the build area and necessary Python modules:
 ```sh
 $ cd path_to_repo
-$ go get github.com/signintech/gopdf
+$ mkdir aux # build directory for the C file
+$ python -m venv export-venv # make venv for the modules
+$ source export-venv/bin/activate # activate the venv
+$ pip install -r requirements.txt # install modules
+```
+Depending on your distribution, you might need to use ``python3`` instead. Just make sure ``python --version`` gives you Python 3. Now everything is ready to run the build script:
+```sh
 $ make full # this will build and install
 ```
-The ``gopdf`` package is now a build dependency and thus must be installed. 
+On the go side, there are no packages required beyond the standard library. Of course you need to have the ``go`` compiler.
 
 ## Basic Usage
 ### Silent mode
@@ -119,11 +126,10 @@ Open config.json with your preferred editor and paste the settings:
 {
     "PDFReader": "your-preferred-pdf-reader",
     "FileExplorer": "your-preferred-file-explorer",
-    "ExportCompression": 0,
-    "LegacyExport": false
+    "ExportQuality": 100,
 }
 ```
-The string passed to each setting must be the name of the **command line utility** that opens the appropriate program. Currently it's not possible to configure your commands to accept extra options for the viewers. You may set ``ExportCompression`` to 1 or 2 for higher compression, but be weary as this requires ``ghostscript``. The ``LegacyExport`` option requires ``ghostscript`` and ``imagemagick`` and should generally be avoided unless the regular export doesn't work.
+The string passed to each setting must be the name of the **command line utility** that opens the appropriate program. Currently it's not possible to configure your commands to accept extra options for the viewers. You may lower ``ExportQuality`` to save space, and this is recommended. Generaly the readability won't drop too much even if you set ``ExportQuality`` to 10 (implied 10%). Play around with it and find what best suits your needs.
 
 ### Roadmap
 * Allow for more configurable viewer commands
