@@ -2,3 +2,5 @@ projects.json
 legacy
 test.sh
 go.sum
+aux
+export-venv
