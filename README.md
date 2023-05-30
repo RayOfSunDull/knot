@@ -19,16 +19,12 @@ This repository includes a compiled binary which may work for you. You can clone
 ```sh
 $ git clone https://github.com/RayOfSunDull/knot
 ```
-You may use the install script to install it:
+You may use the build script to install it. You need to have ``go`` installed in your system to run it.
 ```sh
 $ cd path_to_repo
-$ make install
+$ go run build.go -no-build -install
 ```
-If you don't want to run the script, what it does is basically this: 
-* move the executable from `path_to_repo/bin` to `~/bin`
-* move export binary from ``path_to_repo/bin/export`` to ``~/.config/knot``
-* move the template directory from `path_to_repo/templates` to `~/.config/knot`
-* move `path_to_repo/projects.json` to `~/.config/knot` if it exists, otherwise create it
+This command will install the binaries and config files without building them from source. Run ``go run build.go -help`` for more options.
 
 You may also build it from source, but since Python was added to the project this has become a bit more complicated. You need to have ``cython`` to convert the export script to a C file and ``gcc`` to compile it to a binary. First we need to set up the build area and necessary Python modules:
 ```sh
@@ -40,9 +36,9 @@ $ pip install -r requirements.txt # install modules
 ```
 Depending on your distribution, you might need to use ``python3`` instead. Just make sure ``python --version`` gives you Python 3. Now everything is ready to run the build script:
 ```sh
-$ make full # this will build and install
+$ go run build.go -install # this will build and install
 ```
-On the go side, there are no packages required beyond the standard library. Of course you need to have the ``go`` compiler.
+On the go side, there are no packages required beyond the standard library.
 
 ## Basic Usage
 ### Silent mode
@@ -132,5 +128,5 @@ Open config.json with your preferred editor and paste the settings:
 The string passed to each setting must be the name of the **command line utility** that opens the appropriate program. Currently it's not possible to configure your commands to accept extra options for the viewers. You may lower ``ExportQuality`` to save space, and this is recommended. Generaly the readability won't drop too much even if you set ``ExportQuality`` to 10 (implied 10%). Play around with it and find what best suits your needs.
 
 ### Roadmap (tentative)
+* Port to Windows and maybe MacOS
 * Switch to custom arg parser
-* Port to Windows and MacOS
