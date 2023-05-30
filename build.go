@@ -129,12 +129,13 @@ func main() {
 		osys: stringToOS(runtime.GOOS), 
 		arch: stringToArch(runtime.GOARCH)}
 
+	noBuild := flag.Bool("no-build", false, "if true, the binaries will not be built from source")
 	install := flag.Bool("install", false, "whether to install the program after building")
 	quiet := flag.Bool("quiet", false, "suppress build logs")
 	overwriteTemplates := flag.Bool("overwrite-templates", false, "whether to overwrite the templates of a previous installation, if it exists")
 
 	flag.Parse()
-
+	
 	binaryNames := [1]string{
 		"main"}
 	targetOSs := [1]operatingSystem{
@@ -148,30 +149,32 @@ func main() {
 	topBinDir := filepath.Join(wd, "bin")
 	utilsDir := filepath.Join(wd, "utils")
 	auxDir := filepath.Join(wd, "aux")
+	
+	if ! *noBuild {
+		for _, osys := range targetOSs {
+			srcDir := filepath.Join(topSrcDir, osys.str())
+			binDir := filepath.Join(topBinDir, osys.str())
+			for _, arch := range targetArchs {
+				target := system{osys: osys, arch: arch}
 
-	for _, osys := range targetOSs {
-		srcDir := filepath.Join(topSrcDir, osys.str())
-		binDir := filepath.Join(topBinDir, osys.str())
-		for _, arch := range targetArchs {
-			target := system{osys: osys, arch: arch}
-
-			for _, binName := range binaryNames {
-				if ! *quiet {
-					fmt.Printf("building %s for %s %s\n",
-						binName, arch.str(), osys.str())
+				for _, binName := range binaryNames {
+					if ! *quiet {
+						fmt.Printf("building %s for %s %s\n",
+							binName, arch.str(), osys.str())
+					}
+					
+					out, err := target.buildGo(
+						filepath.Join(srcDir, fmt.Sprintf("%s.go", binName)),
+						filepath.Join(binDir, target.formatBin(binName)))
+					if err != nil { log.Fatal(out) }
 				}
-				
-				out, err := target.buildGo(
-					filepath.Join(srcDir, fmt.Sprintf("%s.go", binName)),
-					filepath.Join(binDir, target.formatBin(binName)))
-				if err != nil { log.Fatal(out) }
-			}
 
-			err = target.buildCython(
-				filepath.Join(utilsDir, "export.py"),
-				filepath.Join(binDir, target.formatBin("export")),
-				filepath.Join(auxDir, "export.c"))
-			if err != nil { log.Fatal(err) }
+				err = target.buildCython(
+					filepath.Join(utilsDir, "export.py"),
+					filepath.Join(binDir, target.formatBin("export")),
+					filepath.Join(auxDir, "export.c"))
+				if err != nil { log.Fatal(err) }
+			}
 		}
 	}
 
@@ -183,6 +186,7 @@ func main() {
 		}
 		var configDir string
 		var binDir string
+		var err error
 		exportFileName := "export"
 
 		switch hostSystem.osys {
@@ -190,6 +194,7 @@ func main() {
 			unix := knot.Unix{}
 			configDir, err = unix.GetConfigDir()
 			if err != nil { log.Fatal(err) }
+			configDir = filepath.Join(configDir, "knot")
 
 			binDir, err = unix.GetBinDir()
 			if err != nil { log.Fatal(err) }
