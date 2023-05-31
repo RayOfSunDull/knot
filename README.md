@@ -12,7 +12,7 @@
         - ...
     * ...
 
-knot allows you to create and quickly open these projetcs, add batches, add pages to batches and export batches to pdf with simple commands. It has only been compiled and tested for linux, and only has ``krita`` as a runtime dependency.
+knot allows you to create and quickly open these projetcs, add batches, add pages to batches and export batches to pdf with simple commands. It has only been compiled and tested for linux, and needs ``krita`` and ``Python 3`` with the ``pillow`` library in order to run. More on this in the installation instructions.
 
 ## Installation (Linux)
 This repository includes a compiled binary which may work for you. You can clone it wherever you like:
@@ -24,21 +24,26 @@ You may use the build script to install it. You need to have ``go`` installed in
 $ cd path_to_repo
 $ go run build.go -no-build -install
 ```
-This command will install the binaries and config files without building them from source. Run ``go run build.go -help`` for more options.
+This command will install the binaries and config files without building them from source. Run ``go run build.go -help`` for more options. To build from source and install, you simply need to run:
+```sh
+$ go run build.go -install
+```
+On the go side, there are no packages required beyond the standard library. 
 
-You may also build it from source, but since Python was added to the project this has become a bit more complicated. You need to have ``cython`` to convert the export script to a C file and ``gcc`` to compile it to a binary. First we need to set up the build area and necessary Python modules:
+Note that ``Python 3`` with ``pillow`` is a runtime dependency! Make sure you have it by running:
 ```sh
-$ cd path_to_repo
-$ mkdir aux # build directory for the C file
-$ python -m venv export-venv # make venv for the modules
-$ source export-venv/bin/activate # activate the venv
-$ pip install -r requirements.txt # install modules
+$ python3 --version
 ```
-Depending on your distribution, you might need to use ``python3`` instead. Just make sure ``python --version`` gives you Python 3. Now everything is ready to run the build script:
+If this fails, try:
 ```sh
-$ go run build.go -install # this will build and install
+$ python --version
 ```
-On the go side, there are no packages required beyond the standard library.
+If this returns Python 2 then you need to install Python 3. You now need to install the pillow library.
+```sh
+$ python3 -m ensurepip --upgrade
+$ pip3 install pillow
+```
+Note that you can install pillow in a venv and run knot from a shell with this venv activated, it will work.
 
 ## Basic Usage
 ### Silent mode
