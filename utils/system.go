@@ -38,7 +38,7 @@ type SystemInfo struct {
 	TempConfigFile string
 	ProjectsFile string
 	TemplateDir string
-	ExporterBinary string
+	ExportScript string
 }
 
 
@@ -67,7 +67,7 @@ func GetSystemInfo(platform Platform) (SystemInfo, error) {
 	projectsFile := filepath.Join(configDir, "projects.json")
 	templateDir := filepath.Join(configDir, "templates")
 	configFile := filepath.Join(configDir, "config.json")
-	exporterBinary := filepath.Join(configDir, "export")
+	exportScript := filepath.Join(configDir, "export.py")
 
 	configBytes, _ := os.ReadFile(configFile)
 
@@ -84,7 +84,7 @@ func GetSystemInfo(platform Platform) (SystemInfo, error) {
 		TempConfigFile: tempConfigFile,
 		ProjectsFile: projectsFile,
 		TemplateDir: templateDir,
-		ExporterBinary: exporterBinary}, nil
+		ExportScript: exportScript}, nil
 }
 
 
