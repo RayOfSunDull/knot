@@ -77,6 +77,7 @@ func ExportBatch(batchNumber int, pi *ProjectInfo, si *SystemInfo) (string, erro
 		batchPath, fmt.Sprintf("%s.pdf", filepath.Base(batchPath)))
 
 	exportArgs := []string{
+		si.ExportScript,
 		"-o", outputPath,
 		"-q", fmt.Sprintf("%v", si.ExportQuality)}
 
@@ -94,7 +95,7 @@ func ExportBatch(batchNumber int, pi *ProjectInfo, si *SystemInfo) (string, erro
 		exportArgs = append(exportArgs, filepath.Join(exportPath, itemName))
 	}
 	
-	cmd := exec.Command(si.ExporterBinary, exportArgs...)
+	cmd := exec.Command(si.PythonCommand, exportArgs...)
 
 	return outputPath, cmd.Run()
 }

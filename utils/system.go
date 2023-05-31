@@ -39,6 +39,7 @@ type SystemInfo struct {
 	ProjectsFile string
 	TemplateDir string
 	ExportScript string
+	PythonCommand string
 }
 
 
@@ -76,6 +77,9 @@ func GetSystemInfo(platform Platform) (SystemInfo, error) {
 
 	ci.SetDefaults()
 
+	pythonCommand, err := platform.GetPythonCommand()
+	if err != nil { return SystemInfo{}, err}
+
 	return SystemInfo{
 		ConfigInfo: ci,
 		TempConfigInfo: tci,
@@ -84,7 +88,8 @@ func GetSystemInfo(platform Platform) (SystemInfo, error) {
 		TempConfigFile: tempConfigFile,
 		ProjectsFile: projectsFile,
 		TemplateDir: templateDir,
-		ExportScript: exportScript}, nil
+		ExportScript: exportScript,
+		PythonCommand: pythonCommand}, nil
 }
 
 
