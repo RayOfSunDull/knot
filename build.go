@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"errors"
 	"runtime"
 	"log"
 	"knot/utils"
@@ -92,37 +91,6 @@ func (target *system) buildGo(src,dst string) (string, error) {
 	return string(out), err
 }
 
-func (target *system) buildCython(src,dst,aux string) error {
-	cythonCmd := exec.Command("cython",
-		src, "-o", aux,
-		"--embed", "-3")
-
-	if cythonErr := cythonCmd.Run(); cythonErr != nil {
-		return cythonErr
-	}
-	switch target.osys {
-	case LINUX:
-		gccCmd := exec.Command("gcc",
-			aux,
-			"-Wno-deprecated-declarations",
-			"-Wl,--copy-dt-needed-entries",
-			"-o", dst,
-			"-I/usr/include/python3.11",
-			"-L./export-venv/lib/python3.11/site-packages",
-			"-lpython3")
-		
-		if gccOut, gccErr := gccCmd.CombinedOutput(); gccErr != nil {
-			return errors.New(fmt.Sprintf("%s:\n%s", gccErr, string(gccOut)))
-		}
-
-		return os.Remove(aux)
-	default:
-		return errors.New(fmt.Sprintf(
-			"compiling for OS %s has not been implemented",
-			target.osys.str()))
-	}
-}
-
 
 func main() {
 	hostSystem := system{
@@ -148,7 +116,6 @@ func main() {
 	topSrcDir := filepath.Join(wd, "src")
 	topBinDir := filepath.Join(wd, "bin")
 	utilsDir := filepath.Join(wd, "utils")
-	auxDir := filepath.Join(wd, "aux")
 	
 	if ! *noBuild {
 		for _, osys := range targetOSs {
@@ -168,12 +135,6 @@ func main() {
 						filepath.Join(binDir, target.formatBin(binName)))
 					if err != nil { log.Fatal(out) }
 				}
-
-				err = target.buildCython(
-					filepath.Join(utilsDir, "export.py"),
-					filepath.Join(binDir, target.formatBin("export")),
-					filepath.Join(auxDir, "export.c"))
-				if err != nil { log.Fatal(err) }
 			}
 		}
 	}
@@ -187,7 +148,6 @@ func main() {
 		var configDir string
 		var binDir string
 		var err error
-		exportFileName := "export"
 
 		switch hostSystem.osys {
 		case LINUX:
@@ -232,12 +192,12 @@ func main() {
 			if err != nil { log.Fatal(err) }
 		}
 		
-		exportInstall := filepath.Join(configDir, exportFileName)
+		exportInstall := filepath.Join(configDir, "export.py")
 		if ! *quiet {
-			fmt.Printf("copying export binary to %s\n", exportInstall)
+			fmt.Printf("copying export script to %s\n", exportInstall)
 		}
 		_, err = knot.CopyFile(
-			filepath.Join(hostBinDir, hostSystem.formatBin("export")),
+			filepath.Join(utilsDir, "export.py"),
 			exportInstall)
 		if err != nil { log.Fatal(err) }
 	}
