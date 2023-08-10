@@ -90,7 +90,6 @@ func OpenKraFilesInBatch(pi *ProjectInfo, batchNumber int, open bool) error {
 	pageRegexp := GetPageRegexp(".kra")
 	
 	pages := make([]string, 0, 10)
-	pages = append(pages, "krita")
 
 	for _, item := range batchDir {
 		if item.IsDir() { continue }
@@ -101,6 +100,6 @@ func OpenKraFilesInBatch(pi *ProjectInfo, batchNumber int, open bool) error {
 		}
 	}
 
-	cmd := exec.Command("nohup", pages...)
+	cmd := exec.Command("krita", pages...)
 	return cmd.Start()
 }
