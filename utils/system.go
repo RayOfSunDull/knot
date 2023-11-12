@@ -44,8 +44,12 @@ type SystemInfo struct {
 
 
 func GetSystemInfo(platform Platform) (SystemInfo, error) {
-	tempDir, err := platform.GetTempDir()
-	if err != nil { return SystemInfo{}, err }
+    platformDirs, err := platform.GetPlatformDirs()
+    if err != nil {
+        return SystemInfo{}, err
+    }
+	tempDir := platformDirs.TempDir
+	sysConfigDir := platformDirs.ConfigDir
 
 	tempConfigFile := filepath.Join(tempDir, "knotconfig.json")
 
@@ -60,9 +64,6 @@ func GetSystemInfo(platform Platform) (SystemInfo, error) {
 
 		tci = TempConfigInfo{KnotWD: knotWD}
 	}
-
-	sysConfigDir, err := platform.GetConfigDir()
-	if err != nil { return SystemInfo{}, err }
 
 	configDir := filepath.Join(sysConfigDir, "knot")
 	projectsFile := filepath.Join(configDir, "projects.json")

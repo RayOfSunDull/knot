@@ -5,38 +5,56 @@ import (
 	"os/exec"
 	"path/filepath"
 	"errors"
+    "strings"
 )
 
+type PlatformDirs struct {
+    ConfigDir string
+    TempDir string
+    BinDir string
+}
+
 type Platform interface {
-	GetConfigDir() (string, error)
-	GetTempDir() (string, error)
-	GetBinDir() (string, error)
-	GetPythonCommand() (string, error)
+    GetPlatformDirs() (PlatformDirs, error)
+    GetPythonCommand() (string, error)
 }
 
-type Unix struct {}
+type Linux struct {}
 
-func (unix Unix) GetConfigDir() (string, error) {
-	home, err := os.UserHomeDir()
-	if err != nil { return "", err }
+func (linux Linux) GetPlatformDirs() (PlatformDirs, error) {
+    homeDir, err := os.UserHomeDir();
+    if err != nil {
+        return PlatformDirs{}, err
+    }
 
-	return filepath.Join(home, ".config"), nil
+    configDir := filepath.Join(homeDir, ".config")
+    tempDir := "/tmp"
+
+    binDir := filepath.Join(homeDir, ".local/bin")
+    preferredBinDir := filepath.Join(homeDir, "bin")
+    // we prefer $HOME/bin to $HOME/.local/bin, so if
+    // it's in $PATH we will change binDir to that
+    path := os.Getenv("PATH")
+    pathElements := strings.Split(path, ":")
+    for _, pathElement := range pathElements {
+        if pathElement != preferredBinDir {
+            continue
+        }
+        binDir = preferredBinDir
+        break
+    }
+
+    return PlatformDirs{
+        ConfigDir: configDir,
+        TempDir: tempDir,
+        BinDir: binDir}, nil
 }
 
-func (unix Unix) GetTempDir() (string, error) {
-	return "/tmp", nil
-}
-
-func (unix Unix) GetBinDir() (string, error) {
-	home, err := os.UserHomeDir()
-	if err != nil { return "", err }
-
-	return filepath.Join(home, "bin"), nil
-}
-
-func (unix Unix) GetPythonCommand() (string, error) {
+func (linux Linux) GetPythonCommand() (string, error) {
 	python3, err := exec.LookPath("python3")
-	if err == nil { return string(python3), nil }
+	if err == nil {
+        return string(python3), nil
+    }
 
 	python3NotFound := errors.New("unable to find Python 3")
 
@@ -51,7 +69,9 @@ func (unix Unix) GetPythonCommand() (string, error) {
 		return "", errors.New("unable to determine Python version")
 	}
 
-	if string(version) != "3" { return "", python3NotFound }
+	if string(version) != "3" {
+        return "", python3NotFound
+    }
 
 	return string(python), nil
 }

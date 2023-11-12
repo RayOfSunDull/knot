@@ -6,7 +6,6 @@ import (
 	"log"
 )
 
-
 func Main(platform Platform) {
 	flags := GetFlags()
 

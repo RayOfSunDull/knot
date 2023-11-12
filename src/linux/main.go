@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	knot.Main(knot.Unix{})
+	knot.Main(knot.Linux{})
 }

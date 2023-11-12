@@ -151,13 +151,14 @@ func main() {
 
 		switch hostSystem.osys {
 		case LINUX:
-			unix := knot.Unix{}
-			configDir, err = unix.GetConfigDir()
+			linux := knot.Linux{}
+            platformDirs, err := linux.GetPlatformDirs()
 			if err != nil { log.Fatal(err) }
+
+			configDir = platformDirs.ConfigDir
 			configDir = filepath.Join(configDir, "knot")
 
-			binDir, err = unix.GetBinDir()
-			if err != nil { log.Fatal(err) }
+            binDir = platformDirs.BinDir
 		default:
 		}
 
