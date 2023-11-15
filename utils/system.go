@@ -8,20 +8,121 @@ import (
 	"path/filepath"
 	"errors"
 	"io"
+    "github.com/glycerine/zygomys/v6/zygo"
 )
 
+type CommandRunner interface {
+    Run(inputs []string) (string, error)
+    Start(inputs []string) error
+}
 
-type ConfigInfo struct {
-	PDFReader string
-	FileExplorer string
-	ExportQuality int
+type SimpleCommandRunner struct {
+    commandName string
+}
+func NewSimpleCommandRunner(commandName string) *SimpleCommandRunner {
+    return &SimpleCommandRunner{ commandName: commandName }
+}
+
+func (runner *SimpleCommandRunner) Run(inputs []string) (string, error) {
+    cmd := exec.Command(runner.commandName, inputs...)
+    output, err := cmd.CombinedOutput()
+    return string(output), err
+}
+
+func (runner *SimpleCommandRunner) Start(inputs []string) error {
+    cmd := exec.Command(runner.commandName, inputs...)
+    return cmd.Start()
+}
+
+type ZygoCommandRunner struct {
+    zygoEnv *zygo.Zlisp
+    zygoFunc *zygo.SexpFunction
+}
+func NewZygoCommandRunner(zygoEnv *zygo.Zlisp, zygoFunc *zygo.SexpFunction) *ZygoCommandRunner {
+    return &ZygoCommandRunner{ zygoEnv: zygoEnv, zygoFunc: zygoFunc }
+}
+
+func (runner *ZygoCommandRunner) Run(inputs []string) (string, error) {
+    sexpInputs := make([]zygo.Sexp, len(inputs))
+    for i, input := range inputs {
+        sexpInputs[i] = &zygo.SexpStr{ S: input }
+    }
+
+    sexp, err := runner.zygoEnv.Apply(runner.zygoFunc, sexpInputs)
+    return sexp.SexpString(zygo.NewPrintState()), err
+}
+
+func (runner *ZygoCommandRunner) Start(inputs []string) error {
+    _, err := runner.Run(inputs)
+    return err
 }
 
 
-func (ci *ConfigInfo) SetDefaults() {
-	if ci.PDFReader == "" { ci.PDFReader = "evince" }
-	if ci.FileExplorer == "" { ci.FileExplorer = "nautilus" }
-	if ci.ExportQuality == 0 { ci.ExportQuality = 100 }
+func CommandRunnerFromZygoEnv(zygoEnv *zygo.Zlisp, sexpName string, defaultRunner CommandRunner) CommandRunner {
+    sexp, found := zygoEnv.FindObject(sexpName)
+    if !found {
+        return defaultRunner
+    }
+
+    switch sexp.(type) {
+    case *zygo.SexpStr:
+        return NewSimpleCommandRunner(string(sexp.(*zygo.SexpStr).S))
+    case *zygo.SexpFunction:
+        return NewZygoCommandRunner(zygoEnv, sexp.(*zygo.SexpFunction))
+    default:
+        return defaultRunner
+    }
+}
+
+func IntFromZygoEnv(zygoEnv *zygo.Zlisp, sexpName string, defaultInt int) int {
+    sexp, found := zygoEnv.FindObject(sexpName)
+    if !found {
+        return defaultInt
+    }
+
+    switch sexp.(type) {
+    case *zygo.SexpInt:
+        return int(sexp.(*zygo.SexpInt).Val)
+    default:
+        return defaultInt
+    }
+}
+
+type ConfigInfo struct {
+	PDFReader CommandRunner
+	FileExplorer CommandRunner
+	ExportQuality int
+}
+
+func LoadConfigInfo(configFile string) ConfigInfo {
+    var configInfo ConfigInfo
+    configInfo.PDFReader = NewSimpleCommandRunner("evince")
+    configInfo.FileExplorer = NewSimpleCommandRunner("nautilus")
+    configInfo.ExportQuality = 100
+
+    zygoEnv := zygo.NewZlisp()
+
+    sexps, err := zygoEnv.ParseFile(configFile)
+    if err != nil {
+        return configInfo
+    }
+    err = zygoEnv.LoadExpressions(sexps)
+    if err != nil {
+        return configInfo
+    }
+    _, err = zygoEnv.Run()
+    if err != nil {
+        return configInfo
+    }
+
+    configInfo.PDFReader = CommandRunnerFromZygoEnv(
+        zygoEnv, "PDFReader", configInfo.PDFReader)
+    configInfo.FileExplorer = CommandRunnerFromZygoEnv(
+        zygoEnv, "FileExplorer", configInfo.FileExplorer)
+    configInfo.ExportQuality = IntFromZygoEnv(
+        zygoEnv, "ExportQuality", configInfo.ExportQuality)
+
+    return configInfo
 }
 
 
@@ -68,15 +169,10 @@ func GetSystemInfo(platform Platform) (SystemInfo, error) {
 	configDir := filepath.Join(sysConfigDir, "knot")
 	projectsFile := filepath.Join(configDir, "projects.json")
 	templateDir := filepath.Join(configDir, "templates")
-	configFile := filepath.Join(configDir, "config.json")
+	configFile := filepath.Join(configDir, "config.zy")
 	exportScript := filepath.Join(configDir, "export.py")
 
-	configBytes, _ := os.ReadFile(configFile)
-
-	var ci ConfigInfo
-	_ = json.Unmarshal(configBytes, &ci)
-
-	ci.SetDefaults()
+    ci := LoadConfigInfo(configFile)
 
 	pythonCommand, err := platform.GetPythonCommand()
 	if err != nil { return SystemInfo{}, err}
@@ -134,11 +230,9 @@ func OpenFile(si *SystemInfo, file string, open bool) error {
 		cmd := exec.Command("krita", file)
 		return cmd.Start()
 	case ".pdf":
-		cmd := exec.Command(si.PDFReader, file)
-		return cmd.Start()
+        return si.PDFReader.Start([]string{file})
 	case "": // directory
-		cmd := exec.Command(si.FileExplorer, file)
-		return cmd.Start()
+        return si.FileExplorer.Start([]string{file})
 	default:
 		return errors.New(fmt.Sprintf(
 			"extension %s is unsupported", extension))
