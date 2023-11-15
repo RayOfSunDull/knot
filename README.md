@@ -115,23 +115,25 @@ There are a few more configurable options, such as batch names and the ability t
 You can configure the file explorer and pdf reader used by knot. The config directory can be accessed as such:
 ```sh
 $ ls ~/.config/knot
-config.json  projects.json  templates
+config.zy  projects.json  templates
 ```
-If there is no ``config.json`` file, you should create it:
+Knot uses [zygo lisp](https://github.com/glycerine/zygomys) as a configuration language. If there is no ``config.zy`` in knot's config directory (there shouldn't be if you haven't made it yourself), you should create it:
 ```sh
 $ cd ~/.config/knot
-$ touch config.json
+$ touch config.zy
 ```
-Open config.json with your preferred editor and paste the settings:
-```json
-{
-    "PDFReader": "your-preferred-pdf-reader",
-    "FileExplorer": "your-preferred-file-explorer",
-    "ExportQuality": 100,
-}
+Config settings can be set as variables, such as below:
+```lisp
+(set PDFReader "evince")
+
+(set FileExplorer "nautilus")
+
+(set ExportQuality 100)
 ```
-The string passed to each setting must be the name of the **command line utility** that opens the appropriate program. Currently it's not possible to configure your commands to accept extra options for the viewers. You may lower ``ExportQuality`` to save space, and this is recommended. Generaly the readability won't drop too much even if you set ``ExportQuality`` to 10 (implied 10%). Play around with it and find what best suits your needs.
+The string passed to each setting must be the name of the **command line utility** that opens the appropriate program. Currently it's not possible to configure your commands to accept extra options for the viewers, but soon there will be scripting capabilities that can do this. You may lower ``ExportQuality`` to save space, and this is recommended. Generaly the readability won't drop too much even if you set ``ExportQuality`` to 10 (implied 10%). Play around with it and find what best suits your needs.
 
 ### Roadmap (tentative)
+* Add zygo functions to enable more control on the readers
+* Rework the template system to accept zygo configuration files instead of going by directory structure
 * Port to Windows and maybe MacOS
-* Switch to custom arg parser
+* Switch to custom arg parser (maybe)
