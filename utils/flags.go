@@ -5,24 +5,24 @@ import (
 )
 
 type Flags struct {
-	SilentMode bool
-	ContentDirName string
-	ContentName string
-	InitDirName string
-	NextBatch bool
-	SpecifiedBatch int
-	NextPage bool
-	SpecifiedPage int
-	ExportLatestBatch bool
+	SilentMode           bool
+	ContentDirName       string
+	ContentName          string
+	InitDirName          string
+	NextBatch            bool
+	SpecifiedBatch       int
+	NextPage             bool
+	SpecifiedPage        int
+	ExportLatestBatch    bool
 	ExportSpecifiedBatch int
-	ExportDirName string
-	TemplateName string
-	DeregisterProject string
-	OpenProject string
-	OpenBatch int
-	ListProjects bool
-	PrintWD bool
-	SetWD string
+	ExportDirName        string
+	TemplateName         string
+	DeregisterProject    string
+	OpenProject          string
+	OpenBatch            int
+	ListProjects         bool
+	PrintWD              bool
+	SetWD                string
 }
 
 func GetFlags() Flags {
@@ -33,7 +33,7 @@ func GetFlags() Flags {
 	contentNamePtr := flag.String("c", "", "name of the content files. If none is specified, the name of the project directory will be used")
 
 	initDirNamePtr := flag.String("i", "", "initialise new project directory with the given name. By default, it will be created in $PWD")
-	
+
 	nextBatchPtr := flag.Bool("b", false, "create the next batch of notes")
 
 	specifiedBatchPtr := flag.Int("sb", -1, "create a new batch of notes with a specified batch number")
@@ -65,22 +65,22 @@ func GetFlags() Flags {
 	flag.Parse()
 
 	return Flags{
-		SilentMode: 			*silentModePtr,
-		ContentDirName: 		*contentDirNamePtr,
-		ContentName: 			*contentNamePtr,
-		InitDirName: 			*initDirNamePtr,
-		NextBatch: 				*nextBatchPtr,
-		SpecifiedBatch: 		*specifiedBatchPtr,
-		NextPage: 				*nextPagePtr,
-		SpecifiedPage: 			*specifiedPagePtr,
-		ExportLatestBatch: 		*exportLatestBatchPtr,
-		ExportSpecifiedBatch: 	*exportSpecifiedBatchPtr,
-		ExportDirName:			*exportDirNamePtr,
-		TemplateName:			*templateNamePtr,
-		DeregisterProject:		*deregisterProjectPtr,
-		OpenProject:			*openProjectPtr,
-		OpenBatch:				*openBatchPtr,
-		ListProjects:			*listProjectsPtr,
-		PrintWD:				*printWD,
-		SetWD:					*setWD}
+		SilentMode:           *silentModePtr,
+		ContentDirName:       *contentDirNamePtr,
+		ContentName:          *contentNamePtr,
+		InitDirName:          *initDirNamePtr,
+		NextBatch:            *nextBatchPtr,
+		SpecifiedBatch:       *specifiedBatchPtr,
+		NextPage:             *nextPagePtr,
+		SpecifiedPage:        *specifiedPagePtr,
+		ExportLatestBatch:    *exportLatestBatchPtr,
+		ExportSpecifiedBatch: *exportSpecifiedBatchPtr,
+		ExportDirName:        *exportDirNamePtr,
+		TemplateName:         *templateNamePtr,
+		DeregisterProject:    *deregisterProjectPtr,
+		OpenProject:          *openProjectPtr,
+		OpenBatch:            *openBatchPtr,
+		ListProjects:         *listProjectsPtr,
+		PrintWD:              *printWD,
+		SetWD:                *setWD}
 }
